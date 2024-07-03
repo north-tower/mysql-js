@@ -1,25 +1,22 @@
-const sql = require('mssql');
+const mysql = require('mysql2/promise');
 
-const config = {
-    user: 'if0_36571718',
-    password: 'bUFaPYdGJO',
-    server: 'sql304.infinityfree.com',
-    database: 'if0_36571718_faas',
-    port: 3306,
-    options: {
-        encrypt: true, // Use this if you're on Azure
-        enableArithAbort: true
+async function connectToDatabase() {
+    const config = {
+        host: 'sql304.infinityfree.com',
+        user: 'if0_36571718',
+        password: 'bUFaPYdGJO',
+        database: 'if0_36571718_faas',
+        port: 3306
+    };
+
+    try {
+        const connection = await mysql.createConnection(config);
+        console.log('Connected to MySQL Server');
+        return connection;
+    } catch (err) {
+        console.error('Database Connection Failed! Bad Config:', err.message);
+        throw err;
     }
-};
+}
 
-const poolPromise = new sql.ConnectionPool(config)
-    .connect()
-    .then(pool => {
-        console.log('Connected to SQL Server');
-        return pool;
-    })
-    .catch(err => console.log('Database Connection Failed! Bad Config: ', err));
-
-module.exports = {
-    sql, poolPromise
-};
+module.exports = connectToDatabase;
