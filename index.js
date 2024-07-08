@@ -67,7 +67,7 @@ app.post('/category', async (req, res) => {
 });
 
 // Endpoint to fetch all journal entries
-app.get('/journal', async (req, res) => {
+app.get('/getJournal', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM journal ORDER BY date DESC');
     res.json(result.rows);
