@@ -49,14 +49,25 @@ app.post('/journal', async (req, res) => {
 
 // Endpoint to fetch all journal entries
 app.get('/journal', async (req, res) => {
+  const { start, end } = req.query;
+
   try {
-    const result = await pool.query('SELECT * FROM journal ORDER BY date DESC');
+    let query = 'SELECT * FROM journal';
+    let queryParams = [];
+
+    if (start && end) {
+      query += ' WHERE date >= $1 AND date <= $2';
+      queryParams = [start, end];
+    }
+
+    const result = await pool.query(query, queryParams);
     res.json(result.rows);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
+  } catch (error) {
+    console.error('Error fetching journal entries:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
   }
 });
+
 
 // Endpoint to insert a new category
 app.post('/category', async (req, res) => {
