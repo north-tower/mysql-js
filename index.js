@@ -77,6 +77,16 @@ app.get('/journal', async (req, res) => {
   }
 });
 
+app.get('/getCategory', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM category');
+    res.json(result.rows);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
