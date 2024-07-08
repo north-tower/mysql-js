@@ -84,6 +84,44 @@ app.get('/category', async (req, res) => {
   }
 });
 
+app.delete('/journal/:id', async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const result = await pool.query('DELETE FROM journal WHERE id = $1', [id]);
+
+    if (result.rowCount > 0) {
+      res.status(200).send(`Journal entry with ID ${id} deleted successfully`);
+    } else {
+      res.status(404).send(`Journal entry with ID ${id} not found`);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+app.put('/journal/:id', async (req, res) => {
+  const { id } = req.params;
+  const { title, content, category, date } = req.body;
+
+  try {
+    const result = await pool.query(
+      'UPDATE journal SET title = $1, content = $2, category = $3, date = $4 WHERE id = $5 RETURNING *',
+      [title, content, category, date, id]
+    );
+
+    if (result.rowCount > 0) {
+      res.status(200).json(result.rows[0]);
+    } else {
+      res.status(404).send(`Journal entry with ID ${id} not found`);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
+
+
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
