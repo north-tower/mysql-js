@@ -1,6 +1,7 @@
 const express = require('express');
 const { Pool } = require('pg');
 const dotenv = require('dotenv');
+const cors = require('cors'); // Import CORS middleware
 
 dotenv.config();
 
@@ -14,13 +15,7 @@ const pool = new Pool({
   }
 });
 
-pool.connect((err) => {
-  if (err) {
-    console.error('Error connecting to the database:', err);
-  } else {
-    console.log('Connected to the database');
-  }
-});
+app.use(cors()); // Enable CORS for all routes
 
 app.use(express.json());
 
@@ -38,25 +33,10 @@ app.get('/users', async (req, res) => {
   }
 });
 
-// Endpoint to create a new journal entry
-app.post('/journal', async (req, res) => {
-  const { title, content, category, date } = req.body;
+// Example route with CORS enabled
+app.get('/getJournal', async (req, res) => {
   try {
-    const result = await pool.query(
-      'INSERT INTO journal (title, content, category, date) VALUES ($1, $2, $3, $4) RETURNING *',
-      [title, content, category, date]
-    );
-    res.status(201).json(result.rows[0]);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Server error');
-  }
-});
-
-// Endpoint to fetch all journal entries
-app.get('/journal', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM journal ORDER BY date DESC');
+    const result = await pool.query('SELECT * FROM journal_entries');
     res.json(result.rows);
   } catch (err) {
     console.error(err);
