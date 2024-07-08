@@ -36,9 +36,9 @@ app.get('/users', async (req, res) => {
 // Example route with CORS enabled
 app.get('/getJournal', async (req, res) => {
   try {
-<<<<<<< HEAD
+
     const result = await pool.query('SELECT * FROM journal_entries');
-=======
+
     const result = await pool.query(
       'INSERT INTO journal (title, content, category, date) VALUES ($1, $2, $3, $4) RETURNING *',
       [title, content, category, date]
@@ -67,7 +67,7 @@ app.post('/category', async (req, res) => {
 app.get('/getJournal', async (req, res) => {
   try {
     const result = await pool.query('SELECT * FROM journal ORDER BY date DESC');
->>>>>>> 02b87d4a1a7eeed855c71f36daf92a04d7b6e5a3
+
     res.json(result.rows);
   } catch (err) {
     console.error(err);
