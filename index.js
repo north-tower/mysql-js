@@ -37,7 +37,7 @@ app.get('/users', async (req, res) => {
 app.get('/getJournal', async (req, res) => {
   try {
 
-    const result = await pool.query('SELECT * FROM journal_entries');
+   
 
     const result = await pool.query(
       'INSERT INTO journal (title, content, category, date) VALUES ($1, $2, $3, $4) RETURNING *',
