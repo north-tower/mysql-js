@@ -52,6 +52,19 @@ app.post('/journal', async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+app.post('/category', async (req, res) => {
+  const {  category } = req.body;
+  try {
+    const result = await pool.query(
+      'INSERT INTO category (category) VALUES ($1) RETURNING *',
+      [category]
+    );
+    res.status(201).json(result.rows[0]);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Server error');
+  }
+});
 
 // Endpoint to fetch all journal entries
 app.get('/journal', async (req, res) => {
